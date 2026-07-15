@@ -20,7 +20,9 @@ For a new project, the PM MUST initialize the environment:
 ## Step 3: 制定全局防護網 (Establish Defense & Test Strategy)
 PM 必須引導 DQA 與 Architect 共同制定全局的測試與觀測策略。
 1. **Lesson Learn Bootstrap (知識繼承)**：讀取 `.agents/lessons_learned/DIGEST.md`（若不存在，執行 `python scripts/generate_digest.py` 產生）。**嚴禁**在 Phase 0 讀取 `entries/` 內任何單筆全文或整份 index，只吸收 DIGEST 的摘要層。若 DIGEST 中某條教訓與本次專案技術棧高度相關，可在 PRD 草案備註，留待後續 Phase 用 `query_lesson.py` 深查全文。
-2. **Team & AI Model Composition [CRITICAL]**: Explicitly ask the CEO about the desired AI workforce (LLM models, external CLI tools like Claude Code, custom roles).
+2. **Team & AI Model Composition [CRITICAL]**: PM 必須檢視目前系統可用的 LLM 模型，並**主動列表推薦** CEO 應該在哪些角色上使用哪種模型，絕對禁止只丟空白問題讓 CEO 盲選。
+   - *推薦範例*：「建議 Architect 與 PM 使用推論最強的模型 (如 `Gemini 3.1 Pro`)」、「建議獨立審查官強制使用 Claude Code CLI (`claude-sonnet 5`)」。
+   - PM 必須將這個「模型與角色適配推薦矩陣」呈現給 CEO 進行最終確認與微調。
 3. **Clarification**: Ask the CEO for the core project goal and clarify ambiguities. Assume the CEO has NO engineering background; use simple logic.
 4. **Global PRD Generation**: Based on the gathered context, the PM MUST draft a highly structured **Global PRD Draft** and save it to `PM/PRD.md`.
    - **注意：Phase 0 的 PRD 是一個針對系統面的「全局規格書」。在進入各個 Milestone 前，PM 才需要再提出該階段詳細的「開發細節計畫書」。**

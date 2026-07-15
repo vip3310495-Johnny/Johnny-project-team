@@ -83,6 +83,14 @@
   - PM 必須執行：`python .agents/skills/Johnny-project-team/scripts/pm_context_compressor.py PM/Memory/M<N>_Digest.md`。
   - 腳本會嚴格驗證摘要是否**小於 800 字**。若超標 (RED LIGHT)，PM 必須重新精簡摘要，剔除無用的除錯流水帳；直到腳本回傳 [GREEN LIGHT]，PM 的記憶壓縮才算完成。
 
+## 8.5 視覺化報告產出 (Visual Report Generation) [NEW]
+在每個 Milestone 結束後、將成果送交 CEO 審查之前，PM 必須自動產出一份專屬的視覺化報告：
+1. **強制使用 Mermaid**：**絕對禁止**要求工程師寫 Python 腳本來畫圖，PM 必須直接使用 Markdown 原生的 **Mermaid 語法** (`graph TD`, `sequenceDiagram`) 來產出圖表 Artifact (例如 `M1_System_Data_Flow.md`)，確保無須安裝套件且介面能完美渲染。
+2. **圖表內容要求**：
+   - **System Flow (系統流程圖)**：標示本次 Milestone 新增或修改的系統元件與路由。
+   - **Data Flow (資料流向圖)**：標示前後端 API 串接與資料庫讀寫狀態。
+3. **CEO 簽核**：PM 必須將這份 Mermaid 圖表連同 DQA 的最終測試報告，一併呈現給 CEO 進行審查與確認。
+
 ## 9. 狀態跳轉 (State Transition)
 Milestone 結束後，PM 必須檢視 `PM/PRD.md` 中的 Milestone 清單：
 - 若**還有未完成的 Milestone** ➔ PM 必須跳回 **Phase 1 (Milestone Detailed Planning)**，開始拆解下一個任務。
