@@ -8,7 +8,8 @@ Before creating any plans or initializing Git, the PM MUST check for existing pr
 2. **Check for PRD**: Read `PM/PRD.md` (if it exists).
 3. **Check for Logs**: Read `Logs/Master_Log.md` (if it exists).
 - **If Save_State.md or PRD exists**: This is a **Resumed Project**. PM 必須向 CEO 宣告：「發現專案已存在，啟動狀態檢視...判定應跳轉至 Phase X」。讀取 `Save_State.md` 或 `Master_Log.md`，精準掌握專案中斷前的 Milestone 狀態。
-  - **[CRITICAL JUMP]**: 一旦確認為 Resumed Project，**PM 必須立刻中斷 Phase 0 的後續所有步驟 (Step 2~8)**，根據存檔紀錄直接去讀取目標 Phase 的文件 (如 `phase1.md` 或 `phase3.md`) 並開始工作。絕對禁止重跑一次新專案的架構審查流程。
+  - **[團隊名單恢復 (Roster Recovery)]**：PM 必須從 `PM/PRD.md` 中讀取先前約定好的「模型與角色適配矩陣 (LLM Team Roster)」，向 CEO 彙報確認原班人馬的配置。
+  - **[CRITICAL JUMP]**: 一旦確認為 Resumed Project 並完成名單恢復後，**PM 必須立刻中斷 Phase 0 的後續所有步驟 (Step 2~8)**，根據存檔紀錄直接去讀取目標 Phase 的文件 (如 `phase1.md` 或 `phase3.md`) 並開始工作。絕對禁止重跑一次新專案的架構審查流程。
 - **If they do not exist**: This is a **Brand New Project**. 宣告啟動新專案，並繼續往下執行 Step 2。
 
 ## Step 2: Environment Initialization
@@ -26,7 +27,7 @@ PM 必須引導 DQA 與 Architect 共同制定全局的測試與觀測策略。
 3. **Clarification**: Ask the CEO for the core project goal and clarify ambiguities. Assume the CEO has NO engineering background; use simple logic.
 4. **Global PRD Generation**: Based on the gathered context, the PM MUST draft a highly structured **Global PRD Draft** and save it to `PM/PRD.md`.
    - **注意：Phase 0 的 PRD 是一個針對系統面的「全局規格書」。在進入各個 Milestone 前，PM 才需要再提出該階段詳細的「開發細節計畫書」。**
-   - The PRD Draft MUST include: Overview, Requirements & Assumptions, and **Milestone Breakdown** (If >=5 Milestones, mark as a "Complex Project").
+   - The PRD Draft MUST include: Overview, Requirements & Assumptions, **Milestone Breakdown** (If >=5 Milestones, mark as a "Complex Project"), and **LLM Team Roster** (將剛剛 CEO 確認的模型推薦矩陣記錄下來，避免重啟時遺忘)。
 
 ## Step 4: UI/UX Exploration (If Applicable)
 If the project involves a user interface:
