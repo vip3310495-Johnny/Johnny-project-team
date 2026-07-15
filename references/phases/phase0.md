@@ -51,14 +51,14 @@ Before presenting to the CEO, the PM MUST involve the specialized DQA roles:
    - **極端邊界測試規劃 (Extreme Boundary Testing)**: 針對系統的極端或惡意輸入進行前置規劃防禦。
    - **審查報告 (Audit Report)**: 審查結束後，TDD DQA 必須撰寫報告並存入 `/TDD_DQA/` (例如：`M1_Review_v1.md`)。
 
-## Step 7: Grill-Me Confirmation (Stop and Ask)
-Before finalizing the Phase, the PM MUST:
-1. Present the finalized PRD, the **System Flow Diagram**, ADRs, DQA strategies, and chosen UI to the CEO.
-2. **Explicitly instruct the CEO**: "CEO，為了確保我們對產品規格、架構流程與設計決策有絕對的共識，請您使用 `/grill-me` slash command 或是呼叫 `grill-me` skill 來對這份計畫進行嚴格的盤問與規格確認。"
-3. **[防呆逃生門]**: 若 CEO 陷入「無決斷力癱瘓」(例如反覆詢問還有沒有問題，陷入無限規劃迴圈)，PM 必須主動呼叫 `scripts/analysis_paralysis_breaker.py` 來強行打破僵局。
-4. **[STOP AND WAIT]**: Pause execution immediately. Do not proceed until the CEO has explicitly approved the entire system plan via Grill-Me.
+## Step 7: 視覺化報告與最終盤問 (Grill-Me Confirmation)
+1. PM 必須將 `PM/PRD.md`、**System Flow Diagram**、ADRs、DQA 策略與選定的 UI 展示給 CEO。
+2. PM 必須主動說明：「為了確保對產品架構有絕對共識，您可以呼叫 `/grill-me` 來對這份計畫進行嚴格盤問。如果您確認無誤，請輸入 `/approve` 讓我能進入下一個階段。」
+3. **[防呆逃生門]**: 若 CEO 陷入「無決斷力癱瘓」，PM 必須主動呼叫 `scripts/analysis_paralysis_breaker.py`。
+4. **[STOP AND WAIT]**: PM 必須強制暫停，等待 CEO 的輸入。
 
-## Step 8: Milestone Review Preference (Stop and Ask)
-ONLY AFTER the plan is fully approved via Grill-Me, the PM MUST ask the CEO how they want to review the upcoming milestones, precisely using the following format:
-"How would you like to review the milestones? (A) Review after *every* milestone, (B) Review after *specific* milestones, or (C) Run fully automatically until Phase 4?"
-- **CRITICAL RULE**: If you propose option (C), you MUST explicitly remind the CEO to reply using the `/goal` command (e.g., "`/goal 我選 C`"). Explain that without the `/goal` command, the agent might pause unexpectedly due to safety limits, so `/goal` is required for true overnight unattended execution. Record the preference.
+## Step 8: 執行階段閘門與跳轉 (Phase Gate Execution)
+1. 當 CEO 回覆 `/approve`，PM 必須詢問 CEO 是否要進入全自動模式 (`/goal`)，並記錄其偏好。
+2. PM 必須執行通用階段閘門腳本：
+   `python .agents/skills/Johnny-project-team/scripts/phase_gate_hook.py --from_phase 0 --to_phase 1 --ceo_signature "/approve"` (若為自動模式則加上 `--auto`)
+3. 只有當腳本回傳 `[GREEN LIGHT]`，PM 才獲准讀取 `phase1.md` 進入下一階段。

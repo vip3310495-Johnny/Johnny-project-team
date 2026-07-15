@@ -33,6 +33,9 @@ PM 必須將抽象的「全局目標」具體轉化為工程師與 DQA 能立刻
 - **【狀態感知與主動提示】(State Awareness)**：
   - PM 在提交 `Milestone_PRD.md` 給 CEO 過目時，必須主動提示目前的系統狀態，例如：「目前系統預設為【手動簽核模式】。請問是否要啟用全自動模式？」
   - 若 CEO 先前使用了 `/goal` 但中途退出，PM 必須主動發問：「偵測到您剛退出 `/goal`，請問接下來的開發是否要切換回【手動簽核模式】？還是維持全自動？」
-- **簽核與跳轉**：
-  - PM 必須取得 CEO 的確認，若 CEO 同意，PM 代為將 CEO 的欄位打勾 `[x]` (全自動模式則無需打勾)。
-  - 接著帶領團隊進入 **Phase 2 (DQA Planning & Boundary Handshake)**，由 SDD DQA 進行規格守門與第二階段簽核。
+- **簽核與跳轉 (Phase Gate Execution)**：
+  - PM 在展示完 Milestone PRD 後，必須主動向 CEO 說明：「請您確認本次 Milestone 開發計畫。若同意請輸入 `/approve`，我將帶領團隊進入 Phase 2 (DQA 規劃階段)。」
+  - 取得 CEO 的 `/approve` 指令後，PM 代為將 CEO 的欄位打勾 `[x]` (全自動模式則無需打勾)。
+  - PM 必須強制執行階段閘門腳本：
+    `python .agents/skills/Johnny-project-team/scripts/phase_gate_hook.py --from_phase 1 --to_phase 2 --ceo_signature "/approve"` (若為自動模式則加上 `--auto`)
+  - 腳本回傳 `[GREEN LIGHT]` 後，正式進入 **Phase 2 (DQA Planning & Boundary Handshake)**。

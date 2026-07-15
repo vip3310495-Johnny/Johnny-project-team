@@ -34,10 +34,12 @@ DQA 必須預先撰寫好自動化測試工具腳本，並分別存入：
 - **架構師與 PM 必須共同擬定** `org_security_policy.json` (組織安全規則)，包含專案特有的禁止讀寫路徑 (如專屬的 Secrets 檔)、以及高危險指令禁令。
 - 此 Policy 檔案將成為 Phase 3 時 `agent_shield_hook.py` 的安檢基準。
 
-## 7. 進入條件
+## 7. 進入條件 (Phase Gate Execution)
 在正式進入 Phase 3 之前，必須滿足以下條件：
 1. PM 批准所有測試計畫、安全護欄政策 (`org_security_policy.json`) 建立完畢，且工具就緒。
-2. **【強制】雙重授權防線 (Milestone Auth Hook)**：
-   - PM 必須在終端機強制執行：`python .agents/skills/Johnny-project-team/scripts/milestone_auth_hook.py <Milestone_PRD.md 路徑>`
-   - 若為**全自動模式** (CEO 已授權略過簽核)，則必須加上參數：`python .agents/skills/Johnny-project-team/scripts/milestone_auth_hook.py <Milestone_PRD.md 路徑> --auto`
-   - **只有當腳本回傳 [GREEN LIGHT] (exit 0) 時，專案才能正式進入 Phase 3。** 否則 PM 必須依照錯誤訊息補齊簽核。
+2. **【強制】階段閘門防線 (Phase Gate Hook)**：
+   - PM 必須主動向 CEO 說明：「Phase 2 (DQA 規劃) 已完成。請您檢視計畫，若同意請輸入 `/approve` 讓我能進入 Phase 3 開發階段。」
+   - 取得 CEO 的 `/approve` 指令後，PM 必須在終端機強制執行：
+     `python .agents/skills/Johnny-project-team/scripts/phase_gate_hook.py --from_phase 2 --to_phase 3 --prd_path <Milestone_PRD.md 路徑> --ceo_signature "/approve"`
+   - 若為**全自動模式**，則加上 `--auto` 參數。
+   - **只有當腳本回傳 [GREEN LIGHT] (exit 0) 時，專案才能正式進入 Phase 3。** 否則 PM 必須依照錯誤訊息補齊簽核 (包含確保 SDD DQA 已在文件內打勾)。

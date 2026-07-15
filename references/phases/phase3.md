@@ -91,7 +91,12 @@
    - **Data Flow (資料流向圖)**：標示前後端 API 串接與資料庫讀寫狀態。
 3. **CEO 簽核**：PM 必須將這份 Mermaid 圖表連同 DQA 的最終測試報告，一併呈現給 CEO 進行審查與確認。
 
-## 9. 狀態跳轉 (State Transition)
-Milestone 結束後，PM 必須檢視 `PM/PRD.md` 中的 Milestone 清單：
-- 若**還有未完成的 Milestone** ➔ PM 必須跳回 **Phase 1 (Milestone Detailed Planning)**，開始拆解下一個任務。
-- 若**所有 Milestone 皆已完成** ➔ PM 必須推進至 **Phase 4 (Final Acceptance & Release)**，準備系統驗收。
+## 9. 狀態跳轉與簽核 (Phase Gate Execution)
+在完成視覺化報告產出後，PM 必須執行以下跳轉授權流程：
+1. **主動請求簽核**：PM 必須向 CEO 說明：「本次 Milestone 的視覺化報告與測試結果皆已出爐。請您檢視，若同意請輸入 `/approve`，我們將進行後續的跳轉。」
+2. **執行階段閘門**：取得 CEO 的 `/approve` 指令後，PM 必須執行：
+   `python .agents/skills/Johnny-project-team/scripts/phase_gate_hook.py --from_phase 3 --to_phase <目標階段> --ceo_signature "/approve"` (若為自動模式則加上 `--auto`)
+3. **跳轉方向**：
+   - 檢視 `PM/PRD.md` 中的 Milestone 清單。
+   - 若**還有未完成的 Milestone** ➔ 目標階段設為 `1`，腳本放行後跳回 **Phase 1 (Milestone Detailed Planning)** 開始拆解下一個任務。
+   - 若**所有 Milestone 皆已完成** ➔ 目標階段設為 `4`，腳本放行後推進至 **Phase 4 (Final Acceptance & Release)**，準備系統驗收。
