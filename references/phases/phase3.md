@@ -68,8 +68,12 @@
 ## 8. 合併與大腦清洗
 - **GREEN LIGHT**：若全數通過，PM 將分支合併回 `main` (若有衝突，Engineer 必須手動解衝突，詳見 `git-strategy.md`)。
 - **知識匯流 (Knowledge Merge) [CRITICAL]**：在 `kill` Agent 之前，PM **必須先**讀取 `.agents/lessons_learned/` 目錄中各 Agent 的個人筆記 (如 `engineering_lesson_learn.md`、`dqa_lessons_learned.md`)，將有價值的踩坑經驗提煉合併至團隊統一知識庫 `Logs/lesson_learnt_registry.md`。這是防止 Agent 被回收後，個人記憶永久消失的最後防線。
-- **Context Window Reset**：大型 Milestone 結束後，PM 必須強制 `kill` 掉舊的 Engineer 與 DQA，並 `invoke` 新的 Agent 以避免大腦幻覺。
-- **知識繼承**：PM 確認知識已匯流完畢後，宣告該 Milestone 完成。新 `invoke` 的 Agent 只需讀取 `Logs/lesson_learnt_registry.md` 即可獲得完整的團隊記憶。
+- **子代理人記憶清除**：大型 Milestone 結束後，PM 必須強制 `kill` 掉舊的 Engineer 與 DQA，並 `invoke` 新的 Agent 以避免大腦幻覺。新 `invoke` 的 Agent 只需讀取 `Logs/lesson_learnt_registry.md` 即可獲得完整的團隊記憶。
+- **【強制】PM 上下文壓縮 (ECC Memory Flush)**：
+  - 子代理人清除後，PM 必須親自撰寫一份 `M<N>_Digest.md`，總結本次 Milestone 的核心架構變更、未解技術債、以及後續依賴事項。
+  - 將檔案存入 `PM/Memory/` 目錄 (如 `PM/Memory/M1_Digest.md`)。若目錄不存在需先建立。
+  - PM 必須執行：`python .agents/skills/Johnny-project-team/scripts/pm_context_compressor.py PM/Memory/M<N>_Digest.md`。
+  - 腳本會嚴格驗證摘要是否**小於 800 字**。若超標 (RED LIGHT)，PM 必須重新精簡摘要，剔除無用的除錯流水帳；直到腳本回傳 [GREEN LIGHT]，PM 的記憶壓縮才算完成。
 
 ## 9. 狀態跳轉 (State Transition)
 Milestone 結束後，PM 必須檢視 `PM/PRD.md` 中的 Milestone 清單：
