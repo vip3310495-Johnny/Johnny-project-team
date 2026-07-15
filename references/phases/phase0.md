@@ -53,9 +53,9 @@ Before presenting to the CEO, the PM MUST involve the specialized DQA roles:
 
 ## Step 7: 視覺化報告與最終盤問 (Grill-Me Confirmation)
 1. PM 必須將 `PM/PRD.md`、**System Flow Diagram**、ADRs、DQA 策略與選定的 UI 展示給 CEO。
-2. PM 必須主動說明：「為了確保對產品架構有絕對共識，您可以呼叫 `/grill-me` 來對這份計畫進行嚴格盤問。如果您確認無誤，請輸入 `/approve` 讓我能進入下一個階段。」
+2. PM 必須主動強烈建議：「CEO，為了確保我們對產品規格與架構決策有絕對的共識，請您務必先使用 `/grill-me` 指令對這份計畫進行嚴格盤問。盤問結束且確認無誤後，請輸入 `/approve` 讓我能進入下一個階段。」
 3. **[防呆逃生門]**: 若 CEO 陷入「無決斷力癱瘓」，PM 必須主動呼叫 `scripts/analysis_paralysis_breaker.py`。
-4. **[STOP AND WAIT]**: PM 必須強制暫停，等待 CEO 的輸入。
+4. **[STOP AND WAIT]**: PM 必須強制暫停，等待 CEO 的盤問與最終輸入。
 
 ## Step 8: 執行階段閘門與跳轉 (Phase Gate Execution)
 1. 當 CEO 回覆 `/approve`，PM 必須詢問 CEO 是否要進入全自動模式 (`/goal`)，並記錄其偏好。
