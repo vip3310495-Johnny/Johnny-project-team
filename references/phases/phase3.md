@@ -31,7 +31,9 @@
 4. **TDD DQA 第一關 (理科把關)**：
    - 確保測試 100% 通過且覆蓋率達 80%。
    - 使用 `references/dqa-analysis.md` 核對靜默錯誤、記憶體洩漏等易錯點。
-   - **【動態運行強制令】**：絕對禁止只做靜態看 Code 分析。TDD DQA 必須親自啟動伺服器或編譯執行檔，將惡意 Mock_Data 實際打入系統，驗證系統在真實運行下的物理防禦力。
+   - **【動態運行強制令與 Docker 沙盒隔離 (Docker Sandbox Mandate)】**：絕對禁止只做靜態看 Code 分析，也**絕對禁止**直接在本地終端機 (Host OS) 下達任何執行指令 (如 `python test.py` 或 `npm test`)。
+   - TDD DQA 必須且只能透過 Docker 容器來掛載執行測試指令，將所有潛在破壞行為 (爆炸半徑) 封死在虛擬貨櫃內。
+     - *指令範例*：`docker run --rm -v ${PWD}:/app -w /app node:18 npm test` 或 `docker run --rm -v ${PWD}:/app -w /app python:3.9 pytest`
    - 若失敗，亮紅燈 (RED LIGHT) 直接退回。
 5. **SDD DQA 第二關 (文科把關)**：
    - TDD 通過後，SDD 進行視覺對齊、A11y (無障礙) 審查與業務邏輯驗證。
