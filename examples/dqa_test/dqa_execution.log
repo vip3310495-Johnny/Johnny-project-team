@@ -1,0 +1,80 @@
+
+==================== 執行腳本: buggy_bank_system.py ====================
+--- 啟動銀行系統測試 ---
+嘗試提款: 80
+嘗試提款: 80
+提款完成，剩餘餘額: 20
+提款完成，剩餘餘額: 20
+--- 最終餘額: 20 ---
+
+==================== 執行腳本: buggy_network_device.py ====================
+--- 測試網路連線 ---
+設備嘗試連線中...
+設備連線成功
+--- 測試接收畸形封包 ---
+收到封包: DATA
+處理封包時發生未預期錯誤: not enough values to unpack (expected 2, got 1)
+系統崩潰: not enough values to unpack (expected 2, got 1)
+
+==================== 執行腳本: buggy_web_api.py ====================
+--- 測試 Web API ---
+
+正常登入測試:
+Executing query: SELECT * FROM users WHERE username='admin' AND password='supersecret'
+登入成功
+
+SQL Injection 攻擊測試:
+Executing query: SELECT * FROM users WHERE username='admin' AND password='' OR '1'='1'
+登入成功
+
+==================== 執行腳本: buggy_ota_updater.py ====================
+--- 測試 OTA 升級 ---
+目前版本: v1.0
+開始下載並安裝新版本: v2.0
+正在抹除舊韌體...
+正在寫入新韌體 (20%)...
+升級失敗: 寫入中途失去連線/斷電
+系統已毀損 (變磚)
+致命錯誤: 設備無法使用
+
+==================== 執行腳本: buggy_ui_app.py ====================
+--- 測試 UI 應用程式 ---
+
+測試一：危險按鈕點擊
+資料已全數刪除！(未跳出防呆確認)
+殘留資料: []
+
+測試二：模擬使用者瘋狂點擊載入
+載入圖片完成，目前記憶體佔用陣列長度: 10000
+載入圖片完成，目前記憶體佔用陣列長度: 20000
+載入圖片完成，目前記憶體佔用陣列長度: 30000
+載入圖片完成，目前記憶體佔用陣列長度: 40000
+載入圖片完成，目前記憶體佔用陣列長度: 50000
+
+==================== 執行腳本: buggy_data_pipeline.py ====================
+--- 測試 Data Pipeline ---
+輸入資料筆數: 4
+成功處理筆數: 3
+處理結果: [{'id': 1, 'value': 20}, {'id': 2, 'value': 40}, {'id': 4, 'value': 80}]
+問題：有 1 筆資料憑空消失了，沒有留下任何追蹤紀錄。
+
+==================== 執行腳本: buggy_auth_service.py ====================
+--- 測試 Auth Service (模擬暴力破解) ---
+嘗試密碼 123450 失敗...
+嘗試密碼 123451 失敗...
+嘗試密碼 123452 失敗...
+嘗試密碼 123453 失敗...
+嘗試密碼 123454 失敗...
+嘗試密碼 123455 失敗...
+[!] 暴力破解成功！密碼為: 123456
+破解耗時: 0.0000 秒
+問題：系統允許無限制的密碼猜測。
+
+==================== 執行腳本: buggy_hardware_controller.py ====================
+[!] 腳本執行超時 (可能發生死鎖或無窮迴圈): Command '['C:\\Users\\User\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe', 'C:\\Johnny\\Antigravity\\Personal\\Skills editor\\dqa_test\\buggy_hardware_controller.py']' timed out after 5 seconds
+
+==================== 執行腳本: buggy_config_parser.py ====================
+--- 測試設定檔相容性 ---
+載入設定檔版本: 1
+系統崩潰 (向後相容性測試失敗): KeyError - 'advanced_features'
+問題：讀取舊版設定檔時未給予預設值，直接造成系統崩潰。
