@@ -53,6 +53,14 @@
    - **獨立意識**：Claude DQA 被嚴格設定為「不可輕信 PM 說的話」。它會親自去讀取專案檔案，用它強大的模型心智 (預設為最新的 `claude-3-7-sonnet`) 進行二次抓漏。
    - 只有當 Claude DQA 也回傳 PASS 時，這段程式碼才算真正通過測試。
 
+## 5.5 防盲目試錯機制 (Anti-Blind-Trial) [CRITICAL]
+當工程師收到任何一關 DQA 亮紅燈退件時，**絕對禁止立刻去修改 `src/` 裡的程式碼**。
+工程師必須強制先完成以下兩件事：
+1. **除錯沙盤推演 (RCA)**：產出 `Debug_Hypothesis.md`，並將其嚴格分類存放在 `/Engineer/RCA/` 資料夾下 (例如 `/Engineer/RCA/M1_Login_Bug.md`)。檔案內需明確寫出報錯的 Root Cause (根本原因) 與接下來打算修改的檔案行數。
+2. **提煉與寫入教訓**：將本次踩坑的知識點提煉成通則，並強制執行 Hook 寫入教訓庫 (必須帶上角色標籤)：
+   `python .agents/skills/Johnny-project-team/scripts/verify_lesson_hook.py --role Engineer --proposal "你的具體教訓"`
+3. **放行條件**：只有當 Hook 回傳 `[APPROVED]` 後，工程師才獲准依照沙盤推演的計畫修改實作代碼。
+
 ## 6. 變更請求阻斷機制 (Mid-Flight Spec Change Exception) [NEW]
 在開發過程中 (Phase 3)，若 CEO 下達修改規格的指令，或 Engineer 發現原規格技術上不可行：
 1. **強制暫停 (Pause)**：PM 必須立刻中斷當前的開發與審查佇列。

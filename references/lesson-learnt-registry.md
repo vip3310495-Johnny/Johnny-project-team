@@ -11,9 +11,9 @@
 所有的知識點都必須經過「知識驗證官 (Lesson Verifier)」的獨立審核。
 
 ## 3. 如何寫入 (強制 Hook 流程)
-當你想寫入教訓時，你**只能**執行以下指令觸發 Hook：
+當你想寫入教訓時，你**只能**執行以下指令觸發 Hook (必須指定 `--role`)：
 ```bash
-python .agents/skills/Johnny-project-team/scripts/verify_lesson_hook.py --proposal "您的具體教訓與防呆 SOP"
+python .agents/skills/Johnny-project-team/scripts/verify_lesson_hook.py --role Engineer --proposal "您的具體教訓與防呆 SOP"
 ```
 （如果是在全域使用，請替換為正確的絕對路徑：`C:\Users\User\.gemini\config\skills\Johnny-project-team\scripts\verify_lesson_hook.py`）
 
@@ -26,5 +26,5 @@ python .agents/skills/Johnny-project-team/scripts/verify_lesson_hook.py --propos
 
 ## 4. 知識繼承 (Knowledge Inheritance) - 按需查詢
 - 為了節省 Token 消耗並避免 Agent 記憶體超載，**絕對禁止**要求 Agent 閱讀整份全域歷史教訓。
-- 新 Agent 被喚醒時，PM **必須先執行 `python scripts/query_lesson.py <相關關鍵字>`**。
-- 只有與本次任務高度相關的「歷史教訓查詢結果」，才會被注入至新 Agent 的初始 Context 中。
+- 新 Agent 被喚醒時，PM **必須先執行 `python scripts/query_lesson.py <角色標籤> <相關關鍵字>`** (例如：`python scripts/query_lesson.py Engineer 資料庫鎖`)。
+- 只有與本次任務高度相關且符合角色的「歷史教訓查詢結果」，才會被注入至新 Agent 的初始 Context 中。

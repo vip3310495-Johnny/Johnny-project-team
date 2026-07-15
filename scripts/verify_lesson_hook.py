@@ -73,10 +73,11 @@ def verify_proposal(proposal):
 
 def main():
     parser = argparse.ArgumentParser(description="Lesson Verifier Hook")
+    parser.add_argument("--role", required=True, choices=["Engineer", "DQA", "PM", "Architect", "Global"], help="The target role for this lesson (Engineer, DQA, PM, Architect, Global)")
     parser.add_argument("--proposal", required=True, help="The lesson learnt proposal text")
     args = parser.parse_args()
     
-    print(f"Submitting Proposal: {args.proposal}")
+    print(f"Submitting Proposal for [{args.role}]: {args.proposal}")
     result = verify_proposal(args.proposal)
     print(f"\nVerifier Response:\n{result}\n")
     
@@ -87,8 +88,9 @@ def main():
         print(">> Proposal [APPROVED]! Routing to lesson registry...")
         
         record_script = os.path.join(os.path.dirname(__file__), 'record_lesson.py')
+        tagged_proposal = f"[{args.role}] {args.proposal}"
         if os.path.exists(record_script):
-            subprocess.run([sys.executable, record_script, args.proposal])
+            subprocess.run([sys.executable, record_script, tagged_proposal])
         else:
             print(">> (Mock) 知識點已成功寫入 entries/ 目錄。")
     else:
