@@ -47,11 +47,10 @@
        - `omniparser` 未安裝 → 改用目視比對方式審查 UI 對齊與破版，並在報告中註明「未使用自動化 UI 解析」。
    - **【邊緣狀態與微交互 (Vibe Review)】**：針對前端/UI 專案，SDD DQA 必須無情獵殺缺乏「Loading 狀態」、「無資料 (Empty) 狀態」與「Error 狀態」的裸奔畫面；並確保所有按鈕與連結都具備符合高質感 (Vibe) 的 Hover/Active 微動畫回饋。
 
-6. **Claude Code DQA 第三關 (外部獨立核查) [選配]**：
-   - **【優雅降級】**：若未安裝 Claude Code CLI (`npx claude`)，PM 可跳過此關，以內部的 TDD + SDD 雙關審查作為最終防線。但須在 `Logs/Master_Log.md` 中記錄「已跳過外部獨立核查」。
-   - 當本地的 TDD 與 SDD DQA 都給予綠燈後，PM 必須呼叫 `scripts/claude_dqa_hook.py`，將修改的檔案路徑交給外部的 Claude Code CLI 進行最終獨立審查。
+6. **Claude Code DQA 第三關 (外部獨立核查) [強制]**：
+   - **【不可跳過】**：當本地的 TDD 與 SDD DQA 都給予綠燈後，PM **必須且只能**呼叫 `scripts/claude_dqa_hook.py`，將修改的檔案路徑交給外部的 Claude Code CLI 進行最終獨立審查。
    - **獨立意識**：Claude DQA 被嚴格設定為「不可輕信 PM 說的話」。它會親自去讀取專案檔案，用它強大的模型心智 (預設為最新的 `claude-3-7-sonnet`) 進行二次抓漏。
-   - 只有當 Claude DQA 也回傳 PASS 時，這段程式碼才算真正通過測試。
+   - **通過條件**：只有當 Claude DQA 也回傳 PASS 時，這段程式碼才算真正通過測試。絕對禁止因為懶惰而跳過此步驟。
 
 ## 5.5 防盲目試錯機制 (Anti-Blind-Trial) [CRITICAL]
 當工程師收到任何一關 DQA 亮紅燈退件時，**絕對禁止立刻去修改 `src/` 裡的程式碼**。
