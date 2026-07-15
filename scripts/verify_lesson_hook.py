@@ -3,7 +3,32 @@ import sys
 import argparse
 import subprocess
 
+import time
+
 COUNT_FILE = os.path.join(os.path.dirname(__file__), '.reject_count')
+LOCK_DIR = os.path.join(os.path.dirname(__file__), '.reject_count.lock')
+
+def acquire_lock():
+    for _ in range(20):
+        try:
+            os.mkdir(LOCK_DIR)
+            return True
+        except FileExistsError:
+            try:
+                lock_age = time.time() - os.path.getmtime(LOCK_DIR)
+                if lock_age > 10:
+                    print(">> [WARNING] 偵測到過期死鎖 (Stale Lock)，強制清除並重新搶佔。")
+                    release_lock()
+            except OSError:
+                pass
+            time.sleep(0.1)
+    return False
+
+def release_lock():
+    try:
+        os.rmdir(LOCK_DIR)
+    except OSError:
+        pass
 
 def get_reject_count():
     if os.path.exists(COUNT_FILE):
@@ -28,8 +53,15 @@ def verify_proposal(proposal):
     
     proposal_lower = proposal.lower()
     
-    if "eslint-disable" in proposal_lower or "ignore" in proposal_lower or "忽略" in proposal_lower or "不准寫" in proposal_lower:
-        return "[REJECTED] 違反「爆炸半徑控制」：此規則可能導致過度防禦或掩蓋潛在錯誤，請提出更具體的修正 SOP，而非直接忽略。"
+    import re
+    dangerous_keywords = ["eslint-disable-next-line", "ts-ignore", "直接忽略", "不要管這個錯誤"]
+    negation_keywords = ["不要", "不該", "絕不", "禁止", "避免"]
+    
+    for k in dangerous_keywords:
+        for match in re.finditer(re.escape(k), proposal_lower):
+            context_before = proposal_lower[max(0, match.start() - 15):match.start()]
+            if not any(n in context_before for n in negation_keywords):
+                return f"[REJECTED] 違反「爆炸半徑控制」：發現危險指令 '{k}' 且無明確的反對語境 (如: 不要、禁止)。請提出更具體的修正 SOP。"
         
     if len(proposal) < 15:
         return "[REJECTED] 違反「可執行性」：提案過短，這看起來像是抱怨而不是防呆規則。請提供具體的 SOP。"
@@ -49,7 +81,9 @@ def main():
     print(f"\nVerifier Response:\n{result}\n")
     
     if "[APPROVED]" in result:
-        update_reject_count(0) # Reset count on success
+        if acquire_lock():
+            update_reject_count(0) # Reset count on success
+            release_lock()
         print(">> Proposal [APPROVED]! Routing to lesson registry...")
         
         record_script = os.path.join(os.path.dirname(__file__), 'record_lesson.py')
@@ -58,11 +92,20 @@ def main():
         else:
             print(">> (Mock) 知識點已成功寫入 entries/ 目錄。")
     else:
-        count = get_reject_count() + 1
-        update_reject_count(count)
-        
+        if acquire_lock():
+            count = get_reject_count() + 1
+            update_reject_count(count)
+            
+            if count >= 5:
+                update_reject_count(0) # Reset after escalating
+            release_lock()
+        else:
+            # Fallback if lock fails
+            print(">> [WARNING] 無法取得 Lock，執行 Fallback (直接覆寫計數器，可能發生競爭)")
+            count = get_reject_count() + 1
+            update_reject_count(count)
+            
         if count >= 5:
-            update_reject_count(0) # Reset after escalating
             print(">> [FATAL_ERROR] 教訓提案已被連續駁回 5 次！")
             print(">> [ACTION_REQUIRED] Agent，請立即停止嘗試。向 CEO 回報你遇到的瓶頸，並請求 CEO 幫忙改寫或提供指導。")
         else:

@@ -5,11 +5,11 @@ import re
 import json
 
 DEFAULT_POLICY = {
-    "banned_commands": ["rm -rf /", "rm -rf ~", "mkfs", "dd if=/dev/zero"],
+    "banned_commands": [r"rm\s+(?:-\w*\s+)*-[rR]*[fF]+(?:\s+-\w+)*\s+/[*\s]*", r"rm\s+(?:-\w*\s+)*-[rR]*[fF]+(?:\s+-\w+)*\s+~[*\s]*", r"mkfs", r"dd\s+if=/dev/zero"],
     "banned_paths": ["~/.ssh", "/etc/shadow", "/etc/passwd", ".env", "secrets.json"],
     "banned_patterns": [
-        r"(?i)(api[_-]?key|secret|password|token)\s*=\s*['\"][A-Za-z0-9_-]{16,}['\"]", # Hardcoded secrets
-        r"aws_access_key_id\s*=\s*['\"][A-Z0-9]{20}['\"]",
+        r"(?i)(api[_-]?key|secret|password|token)\s*=\s*['\"\`]?[A-Za-z0-9_-]{16,}['\"\`]?", # Hardcoded secrets (quotes optional)
+        r"aws_access_key_id\s*=\s*['\"\`]?[A-Z0-9]{20}['\"\`]?",
         r"ghp_[a-zA-Z0-9]{36}"
     ]
 }
@@ -37,8 +37,9 @@ def load_policy(target_dir):
 def scan_file(filepath, policy):
     findings = []
     
-    # Extension filter (skip binary and node_modules)
-    if "node_modules" in filepath or filepath.endswith((".png", ".jpg", ".zip", ".exe", ".dll")):
+    # Extension filter and exact directory name filter (skip binary and node_modules)
+    parts = filepath.replace('\\', '/').split('/')
+    if "node_modules" in parts or filepath.endswith((".png", ".jpg", ".zip", ".exe", ".dll", ".pdf", ".tar", ".gz")):
         return findings
 
     try:
@@ -55,17 +56,27 @@ def scan_file(filepath, policy):
         # 1. Check banned patterns (Secrets)
         for pattern in policy.get("banned_patterns", []):
             if re.search(pattern, line):
-                findings.append(f"{filepath}:{line_num} [CRITICAL] 偵測到疑似硬編碼機密 (Hardcoded Secret)。")
+                snippet = line.strip()[:80]
+                findings.append(f"{filepath}:{line_num} [CRITICAL] 偵測到疑似硬編碼機密 (Hardcoded Secret)。\n    -> Snippet: {snippet}")
                 
         # 2. Check banned paths
         for path in policy.get("banned_paths", []):
-            if path in line and ("open(" in line or "read" in line or "cat " in line):
-                findings.append(f"{filepath}:{line_num} [HIGH] 試圖存取高敏感受保護路徑: {path}")
+            escaped_path = re.escape(path)
+            # Match path enclosed in quotes/backticks, ensuring it aligns with a path boundary
+            if re.search(r"['\"\`](?:[^'\"\`]*[/\\])?" + escaped_path + r"['\"\`]", line) or re.search(r"cat\s*[<\s]\s*" + escaped_path, line):
+                snippet = line.strip()[:80]
+                findings.append(f"{filepath}:{line_num} [HIGH] 試圖存取高敏感受保護路徑: {path}\n    -> Snippet: {snippet}")
                 
         # 3. Check banned commands
         for cmd in policy.get("banned_commands", []):
-            if cmd in line:
-                findings.append(f"{filepath}:{line_num} [FATAL] 偵測到毀滅性系統指令: {cmd}")
+            try:
+                if re.search(cmd, line):
+                    snippet = line.strip()[:80]
+                    findings.append(f"{filepath}:{line_num} [FATAL] 偵測到毀滅性系統指令: {cmd}\n    -> Snippet: {snippet}")
+            except re.error:
+                if cmd in line: # Fallback to string match if not a valid regex
+                    snippet = line.strip()[:80]
+                    findings.append(f"{filepath}:{line_num} [FATAL] 偵測到毀滅性系統指令: {cmd}\n    -> Snippet: {snippet}")
                 
     return findings
 
@@ -73,7 +84,8 @@ def scan_directory(target_dir, policy):
     all_findings = []
     for root, dirs, files in os.walk(target_dir):
         # Skip git and agents directory for scanning speed
-        if '.git' in root or '.agents' in root or '.gemini' in root:
+        parts = root.replace('\\', '/').split('/')
+        if '.git' in parts or '.agents' in parts or '.gemini' in parts:
             continue
             
         for file in files:

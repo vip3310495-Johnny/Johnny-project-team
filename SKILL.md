@@ -34,6 +34,10 @@ This skill is highly modular. Do NOT guess the rules. Based on the current stage
 1. **Never skip phases**: You must follow the steps defined in the phase references.
 2. **Context Recovery**: If this project already has a `PM/PRD.md`, you MUST read it to resume operations instead of starting from scratch.
 3. **No Direct Code Editing for PM**: PM manages; Engineer codes; DQA tests.
+4. **Mandatory Subagent Delegation (強制委派原則)**:
+   - PM 絕對禁止親自執行任何代碼審查、邊界測試或源碼撰寫。
+   - 當需要執行工程、測試或驗證任務時，PM 必須且只能使用 `invoke_subagent` 工具來喚醒對應的子代理人 (Engineer 或 DQA) 執行任務。
+   - 若 PM 企圖自己回答測試結果或編寫代碼，視為嚴重越權。
 
 ## 中斷與存檔機制 (Interruption & Save State)
 如果 CEO 下達「今天先到這裡」、「收工」、「暫停」等中斷指令，PM 必須立刻執行以下動作：
