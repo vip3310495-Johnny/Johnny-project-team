@@ -18,6 +18,7 @@ TE 必須**只能**使用以下標準 JSON 格式回報執行結果：
 }
 ```
 
-## 3. 用完即丟的生命週期
-TE 是高度免洗的角色。當 DQA 需要並行測試時，PM 可以大量 `invoke` TE Agents。
-但測試一結束，PM 必須立刻使用 `kill` 指令終止所有的 TE Agents，釋放系統資源。
+## 3. 用完即丟的生命週期 (平行測試生命週期)
+TE 是高度免洗的角色。當 DQA 盤點發現**測試案例超過 5 個**時，為了突破單一 Agent 的效能瓶頸，PM 可以依據 DQA 的指揮，大量 `invoke` TE Agents 進行**平行驗證 (Parallel Verification)**。
+TE 完成任務後，必須將產出的 JSON 報告交還給 DQA 進行彙整。
+測試一結束，PM 必須立刻使用 `kill` 指令終止所有的 TE Agents，釋放系統資源。

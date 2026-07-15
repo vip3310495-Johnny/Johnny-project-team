@@ -5,6 +5,7 @@
 ## 1. 全局系統整合測試 (System-Level Integration Check)
 - **大腦清洗機制**：若該專案為中大型專案 (Milestone >= 5)，PM 必須 `kill` 掉原本的 DQA Agent，並重新 `invoke` 一名全新的 DQA Agent 來執行最終測試，以消除上下文盲點與疲勞。
 - **簡易專案豁免 (Milestone < 5)**：若專案的 Milestone 總數小於 5，PM 必須在此刻詢問 CEO：「是否需要進行整機測試？」。若 CEO 回覆不強制要求，DQA 可直接給予綠燈通關，節省資源。
+- **【反範圍潛變 (Anti-Scope Creep) 防線】**：在此階段，DQA 的退件權**僅限於「跨模組整合 Bug」與「重大業務邏輯錯誤」**。絕對禁止以「原 PRD 規格不夠完善」為由要求新增功能或改變設計。任何超出原定 PRD 範圍的非致命性發現，只能列為下一版本的優化項目 (Backlog)，不可阻擋當前版本的發布。
 
 ## 2. 測試套件收斂 (Test Suite Consolidation)
 - 工程師與 DQA 必須將 Phase 3 產生的所有零碎測試腳本 (位於 `/SDD_DQA/tool/` 與 `/TDD_DQA/tool/`) 收斂至一個標準的自動化測試框架中 (如 pytest 或 Jest)。

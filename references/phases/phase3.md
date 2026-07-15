@@ -26,7 +26,7 @@
 ## 5. 測試與串聯審查 (Sequential Review)
 當輪到某程式碼審查時，流程如下：
 1. **DQA 靜態審查 (Static Review)**：PM 指示 DQA 讀取對應語言的 Reviewer (位於 `references/ecc_agents/`，例如 `react-reviewer.md`、`python-reviewer.md`、`go-reviewer.md`)，對交接的程式碼進行靜態抓漏。若有架構問題直接退回。
-2. **TE 執行工具**：指派 TE 執行 DQA 撰寫好的動態測試工具。**(注意：TE 必須嚴格遵守 `references/te-persona.md` 的禁令，禁止自己改 Code，只能輸出 JSON 報告)**。
+2. **TE 平行驗證 (Parallel Verification)**：當 DQA 盤點發現測試案例 $\le$ 5 個時，由 DQA 自行執行；若 $> 5$ 個，DQA 必須指揮 PM 喚醒多名 TE 進行平行驗證。**(注意：TE 必須嚴格遵守 `references/te-persona.md` 的禁令，禁止自己改 Code，只能將 JSON 報告交還給 DQA 彙整)**。
 3. **DQA Test Stalemate**：DQA 必須保證自己的腳本無語法錯誤。若修復腳本失敗超過 3 次，視為 Test Stalemate，交由 PM 處理。
 4. **TDD DQA 第一關 (理科把關)**：
    - 確保測試 100% 通過且覆蓋率達 80%。
@@ -37,7 +37,7 @@
    - 若失敗，亮紅燈 (RED LIGHT) 直接退回。
 5. **SDD DQA 第二關 (文科把關)**：
    - TDD 通過後，SDD 進行視覺對齊、A11y (無障礙) 審查與業務邏輯驗證。
-   - **【規格合規性確認】**：SDD DQA 必須嚴格比對產品實作是否 100% 吻合當前 Milestone 的 PRD 與 Spec。若有任何遺漏或實作與 Spec 描述不符之處，立即退回。
+   - **【規格合規性確認】**：SDD DQA 必須貫徹「SDD 開發精神」，嚴格比對產品實作是否 100% 吻合**全局 PRD** 與 **Milestone 細部開發計畫書**。若有任何遺漏或實作與 Spec 描述不符之處，立即退回。
    - **【動態體驗驗證 (Computer Use 整合)】**：絕對禁止只看截圖。SDD DQA 必須優先嘗試使用以下工具輔助測試：
      - 若為 Web 專案：使用 `gstack` (極速無頭瀏覽器) 實際開啟網頁、點擊按鈕、填寫表單。
      - 跨平台 UI 解析：強制呼叫 `omniparser` 來解析產品的螢幕截圖，取得所有按鈕、圖示的精確 Bounding Box (邊界框) 座標，判斷是否破版或對齊。
@@ -53,18 +53,25 @@
    - **獨立意識**：Claude DQA 被嚴格設定為「不可輕信 PM 說的話」。它會親自去讀取專案檔案，用它強大的模型心智 (預設為最新的 `claude-3-7-sonnet`) 進行二次抓漏。
    - 只有當 Claude DQA 也回傳 PASS 時，這段程式碼才算真正通過測試。
 
-## 6. 僵局裁決 (Stalemate Escalate)
+## 6. 變更請求阻斷機制 (Mid-Flight Spec Change Exception) [NEW]
+在開發過程中 (Phase 3)，若 CEO 下達修改規格的指令，或 Engineer 發現原規格技術上不可行：
+1. **強制暫停 (Pause)**：PM 必須立刻中斷當前的開發與審查佇列。
+2. **降級回溯 (Rollback)**：PM 必須帶著新的需求降級回到 **Phase 1**，更新 `Milestone_PRD.md`。
+3. **重新守門 (Re-Gatekeeping)**：更新後的計畫書必須再次經過 Architect 的架構影響評估，以及 SDD DQA 的 **Phase 2** 審核與腳本修正。
+**絕對禁令**：嚴禁 Engineer 在沒有更新 PRD/Spec 的情況下，私下接受 PM 或 CEO 的口頭指令直接改 Code。這會導致 SDD DQA 依照舊 Spec 測試而產生無窮盡的退件死鎖。
+
+## 7. 僵局裁決 (Stalemate Escalate)
 - 若 Engineer 提交的代碼被 DQA 退回超過 **5 次**，觸發僵局。
 - PM 強制暫停開發，撰寫 `Conflict_Report.md`，交由 CEO 進行最終裁決。
 - **【PM 反推卸責任 (Anti-Buck-Passing)】**：PM 必須提出結構化的 Option A / Option B 給 CEO 選擇，絕對禁止直接把錯誤丟給 CEO 去敲指令。
 
-## 7. 合併與大腦清洗
+## 8. 合併與大腦清洗
 - **GREEN LIGHT**：若全數通過，PM 將分支合併回 `main` (若有衝突，Engineer 必須手動解衝突，詳見 `git-strategy.md`)。
 - **知識匯流 (Knowledge Merge) [CRITICAL]**：在 `kill` Agent 之前，PM **必須先**讀取 `.agents/lessons_learned/` 目錄中各 Agent 的個人筆記 (如 `engineering_lesson_learn.md`、`dqa_lessons_learned.md`)，將有價值的踩坑經驗提煉合併至團隊統一知識庫 `Logs/lesson_learnt_registry.md`。這是防止 Agent 被回收後，個人記憶永久消失的最後防線。
 - **Context Window Reset**：大型 Milestone 結束後，PM 必須強制 `kill` 掉舊的 Engineer 與 DQA，並 `invoke` 新的 Agent 以避免大腦幻覺。
 - **知識繼承**：PM 確認知識已匯流完畢後，宣告該 Milestone 完成。新 `invoke` 的 Agent 只需讀取 `Logs/lesson_learnt_registry.md` 即可獲得完整的團隊記憶。
 
-## 8. 狀態跳轉 (State Transition)
+## 9. 狀態跳轉 (State Transition)
 Milestone 結束後，PM 必須檢視 `PM/PRD.md` 中的 Milestone 清單：
 - 若**還有未完成的 Milestone** ➔ PM 必須跳回 **Phase 1 (Milestone Detailed Planning)**，開始拆解下一個任務。
 - 若**所有 Milestone 皆已完成** ➔ PM 必須推進至 **Phase 4 (Final Acceptance & Release)**，準備系統驗收。

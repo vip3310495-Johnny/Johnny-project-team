@@ -14,6 +14,7 @@ PM 必須將抽象的「全局目標」具體轉化為工程師與 DQA 能立刻
   - 核心 User Stories。
   - 需要實作的 UI 畫面與互動邏輯 (精確描述)。
   - 需要串接的後端 API 或資料存取邏輯。
+  - **【強制】驗收標準 (Acceptance Criteria) 與邊界條件**：PM 必須提供足夠詳盡的細節，確保後續 SDD DQA 有明確的依據可進行業務邏輯驗證。若細節不足，SDD DQA 有權在 Phase 2 將計畫書退回。
 
 ## 3. Architect 微觀架構設計 (Component Design)
 - PM 必須呼叫 **Architect Agent**，針對 `Milestone_PRD.md` 進行微觀架構設計。
