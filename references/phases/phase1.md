@@ -24,6 +24,15 @@ PM 必須將抽象的「全局目標」具體轉化為工程師與 DQA 能立刻
   - **元件樹 (Component Tree)**：若是前端專案，定義要切解多少個 React/Vue Components。
 
 ## 4. 準備進入測試驅動規劃 (Transition to Phase 2)
-- 當 PM 與 Architect 產出完整的微觀規劃後：
-  - **若該 Milestone 包含前端 UI 畫面或重大業務邏輯變更**：PM **必須**將 `Milestone_PRD.md` 呈報 CEO 確認，確保微觀規格與 CEO 的想像一致。若 CEO 提出修改意見，PM 須修改後重新確認。只有 CEO 明確同意後，才可進入 Phase 2。
-  - **若該 Milestone 為純後端/基礎設施/無 UI 變更**：PM 無須額外詢問 CEO，可直接帶領團隊進入 **Phase 2 (DQA Planning & Boundary Handshake)**，讓 DQA 開始依據這份 `Milestone_PRD.md` 制定測試計畫。
+- 當 PM 與 Architect 產出完整的微觀規劃後，PM **必須**在 `Milestone_PRD.md` 的最底部加上以下簽核區塊：
+  ```markdown
+  ## 授權狀態 (Authorization Status)
+  - [ ] CEO 授權同意 (CEO Approved)
+  - [ ] SDD DQA 授權同意 (SDD DQA Approved)
+  ```
+- **【狀態感知與主動提示】(State Awareness)**：
+  - PM 在提交 `Milestone_PRD.md` 給 CEO 過目時，必須主動提示目前的系統狀態，例如：「目前系統預設為【手動簽核模式】。請問是否要啟用全自動模式？」
+  - 若 CEO 先前使用了 `/goal` 但中途退出，PM 必須主動發問：「偵測到您剛退出 `/goal`，請問接下來的開發是否要切換回【手動簽核模式】？還是維持全自動？」
+- **簽核與跳轉**：
+  - PM 必須取得 CEO 的確認，若 CEO 同意，PM 代為將 CEO 的欄位打勾 `[x]` (全自動模式則無需打勾)。
+  - 接著帶領團隊進入 **Phase 2 (DQA Planning & Boundary Handshake)**，由 SDD DQA 進行規格守門與第二階段簽核。
