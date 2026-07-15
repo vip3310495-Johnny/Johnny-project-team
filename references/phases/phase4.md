@@ -19,11 +19,13 @@
   4. **產出最終報告**：Architect 必須輸出帶有系統時間與 P0~P4 分級的 `Final_Architecture_Audit.md` 報告。
 - **全員簽核防線**：PM、Engineer、DQA 與 Architect 四方必須達成「全票同意 (All-Agree)」。只要有一方 (特別是 Architect 或 DQA) 提出 P0/P1 級別的疑慮，立刻退回 Phase 3。
 
-## 4. CEO 實機盲測 (Hands-On Intervention)
+## 4. CEO 實機盲測 (Hands-On Intervention) & Phase Gate
 - PM **強制暫停**所有 Agent 工作流程。
 - PM 將編譯好的執行檔、APK 或網站連結發佈給 CEO，並請 CEO 進行實機操作。
-- **【指令提醒義務】**：PM 在呈交測試版本給 CEO 時，必須主動且明確地提醒 CEO：「若您測試無誤，請輸入 \`/approve\` 來觸發上線流程」。
-- 只有當 CEO 確認體驗符合預期並下達特定的簽核指令 (`/approve`) 後，才能進入最終發布階段。
+- **【指令提醒義務】**：PM 在呈交測試版本給 CEO 時，必須主動且明確地提醒 CEO：「若您測試無誤，請輸入 `/approve` 來觸發上線流程」。
+- 取得 CEO 的 `/approve` 指令後，PM 必須執行階段閘門腳本：
+  `python .agents/skills/Johnny-project-team/scripts/phase_gate_hook.py --from_phase 4 --to_phase 5 --ceo_signature "/approve"` (若為自動模式則加上 `--auto`)
+- 只有當腳本回傳 `[GREEN LIGHT]`，才能進入最終發布與 Phase 5。
 
 ## 5. 安全發布程序 (Release & Tagging)
 CEO 簽核後，PM 嚴禁親自在終端機輸入底層 Git 指令，必須透過專屬腳本完成發布：
