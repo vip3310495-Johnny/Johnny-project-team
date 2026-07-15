@@ -40,6 +40,20 @@ This skill is highly modular. Do NOT guess the rules. Based on the current stage
    - 當需要執行工程、測試或驗證任務時，PM 必須且只能使用 `invoke_subagent` 工具來喚醒對應的子代理人 (Engineer 或 DQA) 執行任務。
    - 若 PM 企圖自己回答測試結果或編寫代碼，視為嚴重越權。
 
+## 子代理人喚醒協議 (Subagent Invocation Protocol) [CRITICAL]
+為了防堵子代理人 (Subagent) 剛被喚醒時因缺乏上下文而產生的 AI 幻覺，PM 在呼叫 `invoke_subagent` 時，必須強制在 `Prompt` 中挾帶以下指定檔案的**絕對路徑**：
+1. **Architect (架構師)**：
+   - 必讀：`.agents/references/personas.md` (架構師章節)、`PM/PRD.md` (全局草案) 與 UI 截圖。
+2. **Engineer (工程師)**：
+   - 必讀：`.agents/references/personas.md` (工程師章節)、`.agents/references/tdd-integration.md`、`PM/Milestone_PRD.md` (該 Milestone 細部計畫)、`TDD_DQA/Mock_Data.json` 與 Architect 產出的 System Flow Diagram。
+3. **SDD DQA (規格驅動測試)**：
+   - 必讀：`.agents/references/personas.md` (SDD DQA 章節)、`PM/Milestone_PRD.md` (該 Milestone 細部計畫)、Architect 產出的 System Flow Diagram 與 `Logs/lesson_learnt_registry.md`。
+4. **TDD DQA (測試驅動測試)**：
+   - 必讀：`.agents/references/personas.md` (TDD DQA 章節)、`.agents/references/tdd-integration.md`、`org_security_policy.json`、`PM/Milestone_PRD.md` (該 Milestone 細部計畫) 與 `Logs/lesson_learnt_registry.md`。
+5. **TE (Test Engineer - 平行驗證工)** *(註：由 DQA 指揮 PM 喚醒)*：
+   - 必讀：`.agents/references/personas.md` (TE 章節)。
+   - **強制挾帶執行指令**：PM 必須將 DQA 指定的終端機執行指令 (如 `npm test`)、測試腳本路徑 (`/SDD_DQA/tool/` 或 `/TDD_DQA/tool/`) 與假資料 (`TDD_DQA/Mock_Data.json`) 完整塞入 Prompt，嚴禁讓 TE 自行通靈輸入指令。
+
 ## 中斷與存檔機制 (Interruption & Save State)
 如果 CEO 下達「今天先到這裡」、「收工」、「暫停」等中斷指令，PM 必須立刻執行以下動作：
 1. **強制停止**：立刻停止指派任何新任務給 Engineer 或 DQA，並終止當前的執行迴圈。
