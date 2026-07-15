@@ -7,8 +7,9 @@ Before creating any plans or initializing Git, the PM MUST check for existing pr
 1. **Check for Save State [CRITICAL]**: Read `Logs/Save_State.md` (if it exists). 這是最精準的甦醒恢復點。
 2. **Check for PRD**: Read `PM/PRD.md` (if it exists).
 3. **Check for Logs**: Read `Logs/Master_Log.md` (if it exists).
-- **If Save_State.md or PRD exists**: This is a **Resumed Project**. PM 必須讀取 `Save_State.md` 或 `Master_Log.md`，精準掌握專案中斷前的 Milestone 狀態與卡關點。You MUST NOT rewrite the entire PRD. 根據存檔紀錄，精準跳轉至中斷的 Phase (例如 Phase 1 繼續規劃，或 Phase 3 繼續修復 Bug)。
-- **If they do not exist**: This is a **Brand New Project**. Proceed to Step 2.
+- **If Save_State.md or PRD exists**: This is a **Resumed Project**. PM 必須向 CEO 宣告：「發現專案已存在，啟動狀態檢視...判定應跳轉至 Phase X」。讀取 `Save_State.md` 或 `Master_Log.md`，精準掌握專案中斷前的 Milestone 狀態。
+  - **[CRITICAL JUMP]**: 一旦確認為 Resumed Project，**PM 必須立刻中斷 Phase 0 的後續所有步驟 (Step 2~8)**，根據存檔紀錄直接去讀取目標 Phase 的文件 (如 `phase1.md` 或 `phase3.md`) 並開始工作。絕對禁止重跑一次新專案的架構審查流程。
+- **If they do not exist**: This is a **Brand New Project**. 宣告啟動新專案，並繼續往下執行 Step 2。
 
 ## Step 2: Environment Initialization
 For a new project, the PM MUST initialize the environment:
