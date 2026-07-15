@@ -47,9 +47,9 @@ This skill is highly modular. Do NOT guess the rules. Based on the current stage
 2. **Engineer (工程師)**：
    - 必讀：`.agents/references/personas.md` (工程師章節)、`.agents/references/tdd-integration.md`、`PM/Milestone_PRD.md` (該 Milestone 細部計畫)、`TDD_DQA/Mock_Data.json` 與 Architect 產出的 System Flow Diagram。
 3. **SDD DQA (規格驅動測試)**：
-   - 必讀：`.agents/references/personas.md` (SDD DQA 章節)、`PM/Milestone_PRD.md` (該 Milestone 細部計畫)、Architect 產出的 System Flow Diagram 與 `Logs/lesson_learnt_registry.md`。
+   - 必讀：`.agents/references/personas.md` (SDD DQA 章節)、`PM/Milestone_PRD.md` (若在 Phase 0 則改讀 `PM/PRD.md` 全局草案)、Architect 產出的 System Flow Diagram 與 `Logs/lesson_learnt_registry.md`。
 4. **TDD DQA (測試驅動測試)**：
-   - 必讀：`.agents/references/personas.md` (TDD DQA 章節)、`.agents/references/tdd-integration.md`、`org_security_policy.json`、`PM/Milestone_PRD.md` (該 Milestone 細部計畫) 與 `Logs/lesson_learnt_registry.md`。
+   - 必讀：`.agents/references/personas.md` (TDD DQA 章節)、`.agents/references/tdd-integration.md`、`org_security_policy.json` (Phase 2 之後才需提供)、`PM/Milestone_PRD.md` (若在 Phase 0 則改讀 `PM/PRD.md` 全局草案) 與 `Logs/lesson_learnt_registry.md`。
 5. **TE (Test Engineer - 平行驗證工)** *(註：由 DQA 指揮 PM 喚醒)*：
    - 必讀：`.agents/references/personas.md` (TE 章節)。
    - **強制挾帶執行指令**：PM 必須將 DQA 指定的終端機執行指令 (如 `npm test`)、測試腳本路徑 (`/SDD_DQA/tool/` 或 `/TDD_DQA/tool/`) 與假資料 (`TDD_DQA/Mock_Data.json`) 完整塞入 Prompt，嚴禁讓 TE 自行通靈輸入指令。
